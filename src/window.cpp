@@ -18,9 +18,6 @@ int main(void) {
   /* Make the window's context current */
   glfwMakeContextCurrent(window);
 
-  // Initialize OpenGL Context not needed when using GL library versus glad,
-  // will eventually switch to Vulkan gladLoadGL();
-
   /* Loop until the user closes the window */
   while (!glfwWindowShouldClose(window)) {
     /* Render here */
