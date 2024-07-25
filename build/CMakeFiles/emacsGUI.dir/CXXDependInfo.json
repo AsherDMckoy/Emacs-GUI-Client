@@ -1,0 +1,21 @@
+{
+	"bmi-installation" : null,
+	"compiler-frontend-variant" : "GNU",
+	"compiler-id" : "GNU",
+	"compiler-simulate-id" : "",
+	"config" : "",
+	"cxx-modules" : {},
+	"dir-cur-bld" : "/home/adalovelace/Dev/C++/guiProject/build",
+	"dir-cur-src" : "/home/adalovelace/Dev/C++/guiProject",
+	"dir-top-bld" : "/home/adalovelace/Dev/C++/guiProject/build",
+	"dir-top-src" : "/home/adalovelace/Dev/C++/guiProject",
+	"exports" : [],
+	"forward-modules-from-target-dirs" : [],
+	"include-dirs" : 
+	[
+		"/home/adalovelace/Dev/C++/guiProject/include"
+	],
+	"language" : "CXX",
+	"linked-target-dirs" : [],
+	"module-dir" : "/home/adalovelace/Dev/C++/guiProject/build/CMakeFiles/emacsGUI.dir"
+}

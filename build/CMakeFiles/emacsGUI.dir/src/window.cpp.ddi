@@ -1,0 +1,11 @@
+{
+"rules": [
+{
+"primary-output": "CMakeFiles/emacsGUI.dir/src/window.cpp.o",
+"requires": [
+]
+}
+],
+"version": 0,
+"revision": 0
+}
