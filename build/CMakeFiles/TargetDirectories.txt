@@ -1,3 +1,0 @@
-/home/adalovelace/Dev/C++/guiProject/build/CMakeFiles/emacsGUI.dir
-/home/adalovelace/Dev/C++/guiProject/build/CMakeFiles/edit_cache.dir
-/home/adalovelace/Dev/C++/guiProject/build/CMakeFiles/rebuild_cache.dir
