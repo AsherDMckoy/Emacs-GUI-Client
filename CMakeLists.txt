@@ -6,6 +6,7 @@ project(
 set(CMAKE_C_STANDARD 17)
 set(CMAKE_CXX_STANDARD 23)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
+set(CMAKE_CXX_FLAGS_RELEASE_INIT "-O3")
 file(GLOB_RECURSE SOURCES "src/*.c*")
 file(GLOB_RECURSE HEADERS "inlcude/*.h")
 
@@ -24,8 +25,9 @@ target_link_libraries(${PROJECT_NAME} PRIVATE glfw)
 find_package(OpenGL REQUIRED)
 target_link_libraries(${PROJECT_NAME} PRIVATE OpenGL::GL)
 
-# Add other dependencies as needed For example, FreeType: find_package(Freetype
-# REQUIRED) target_link_libraries(${PROJECT_NAME} PRIVATE Freetype::Freetype)
+# Find and link Freetype
+find_package(Freetype REQUIRED)
+target_link_libraries(${PROJECT_NAME} PRIVATE Freetype::Freetype)
 
 # Set compiler warnings
 if(MSVC)
