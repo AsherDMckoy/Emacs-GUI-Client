@@ -11,7 +11,6 @@
 #include <exception>
 #include <iostream>
 #include <optional>
-#include <set>
 #include <stdexcept>
 #include <vector>
 
@@ -52,11 +51,8 @@ void DestroyDebugUtilsMessengerEXT(VkInstance instance,
 
 struct QueueFamilyIndices {
   std::optional<uint32_t> graphicsFamily;
-  std::optional<uint32_t> presentFamily;
 
-  bool isComplete() {
-    return graphicsFamily.has_value() && presentFamily.has_value();
-  }
+  bool isComplete() { return graphicsFamily.has_value(); }
 };
 
 class HelloTriangle {
@@ -74,8 +70,6 @@ private:
   VkDebugUtilsMessengerEXT debugMessenger;
   VkPhysicalDevice physicalDevice = VK_NULL_HANDLE;
   VkDevice logicalDevice;
-  VkQueue graphicsQueue;
-  VkQueue presentQueue;
   void initWindow() {
     if (!glfwInit()) {
       std::cerr << "Cannot initialize glfw" << std::endl;
@@ -95,7 +89,6 @@ private:
   void initVulkan() {
     createInstance();
     setupDebugMessenger();
-    createSurface();
     pickPhysicalDevice();
     createLogicalDevice();
   }
@@ -110,10 +103,6 @@ private:
     populateApplicationInfo(appInfo);
 
     auto extensions = getRequiredExtensions();
-    std::cout << "Extensions required:\n";
-    for (const auto &extension : extensions) {
-      std::cout << extension << std::endl;
-    }
 
     VkInstanceCreateInfo createInfo{};
     populateVkInstanceCreateInfo(createInfo, appInfo, extensions);
@@ -131,23 +120,21 @@ private:
       createInfo.pNext = nullptr;
     }
 
+    // printf("GLFW VULKAN EXTENSIONS:\n");
+    // for (uint32_t i = 1; i < glfwExtensionCount; i++) {
+    //   printf("\t%d:\t%s\n", i, *glfwExtensions);
+    // }
     // uint32_t extensionCount = 0;
     // vkEnumerateInstanceExtensionProperties(nullptr, &extensionCount,
-    // nullptr); std::vector<VkExtensionProperties> extensions4(extensionCount);
+    // nullptr); std::vector<VkExtensionProperties> extensions(extensionCount);
     // vkEnumerateInstanceExtensionProperties(nullptr, &extensionCount,
-    //                                        extensions4.data());
+    //                                        extensions.data());
     // std::cout << "available extensions:\n";
-    // for (const auto &extension : extensions4) {
+    // for (const auto &extension : extensions) {
     //   std::cout << '\t' << extension.extensionName << '\n';
     // }
     if (vkCreateInstance(&createInfo, nullptr, &instance) != VK_SUCCESS) {
       throw std::runtime_error("failed to create instance!");
-    }
-  }
-  void createSurface() {
-    if ((glfwCreateWindowSurface(instance, window, nullptr, &surface) !=
-         VK_SUCCESS)) {
-      throw std::runtime_error("failed to create window surface!");
     }
   }
 
@@ -200,13 +187,6 @@ private:
 
     int i = 0;
     for (const auto &queueFamily : queueFamilies) {
-      VkBool32 presentSupport = false;
-      vkGetPhysicalDeviceSurfaceSupportKHR(device, i, surface, &presentSupport);
-
-      if (presentSupport) {
-        indices.presentFamily = i;
-      }
-
       if (queueFamily.queueFlags & VK_QUEUE_GRAPHICS_BIT) {
         indices.graphicsFamily = i;
       }
@@ -221,53 +201,19 @@ private:
   }
   void createLogicalDevice() {
     QueueFamilyIndices indices = findQueueFamilies(physicalDevice);
-    std::vector<VkDeviceQueueCreateInfo> queueCreateInfos;
-    std::set<uint32_t> uniqueQueueFamilies = {indices.graphicsFamily.value(),
-                                              indices.presentFamily.value()};
+    VkDeviceQueueCreateInfo queueCreateInfo{};
+    queueCreateInfo.sType = VK_STRUCTURE_TYPE_DEVICE_QUEUE_CREATE_INFO;
+    queueCreateInfo.queueFamilyIndex = indices.graphicsFamily.value();
+    queueCreateInfo.queueCount = 1;
 
     float queuePriority = 1.0f;
-    for (uint32_t queueFamily : uniqueQueueFamilies) {
-      VkDeviceQueueCreateInfo queueCreateInfo{};
-      queueCreateInfo.sType = VK_STRUCTURE_TYPE_DEVICE_QUEUE_CREATE_INFO;
-      queueCreateInfo.queueFamilyIndex = queueFamily;
-      queueCreateInfo.queueCount = 1;
-      queueCreateInfo.pQueuePriorities = &queuePriority;
-      queueCreateInfos.push_back(queueCreateInfo);
-    }
-
+    queueCreateInfo.pQueuePriorities = &queuePriority;
     VkPhysicalDeviceFeatures deviceFeatures{};
-
-    VkDeviceCreateInfo deviceCreateInfo{};
-    deviceCreateInfo.sType = VK_STRUCTURE_TYPE_DEVICE_CREATE_INFO;
-    deviceCreateInfo.queueCreateInfoCount =
-        static_cast<uint32_t>(queueCreateInfos.size());
-    deviceCreateInfo.pQueueCreateInfos = queueCreateInfos.data();
-
-    deviceCreateInfo.pEnabledFeatures = &deviceFeatures;
-    deviceCreateInfo.enabledExtensionCount = 0;
-
-    if (enableValidationLayers) {
-      deviceCreateInfo.enabledLayerCount =
-          static_cast<uint32_t>(validationLayers.size());
-      deviceCreateInfo.ppEnabledLayerNames = validationLayers.data();
-    } else {
-      deviceCreateInfo.enabledLayerCount = 0;
-    }
-
-    if (vkCreateDevice(physicalDevice, &deviceCreateInfo, nullptr,
-                       &logicalDevice) != VK_SUCCESS) {
-      throw std::runtime_error("failed to create logical device");
-    }
-
-    vkGetDeviceQueue(logicalDevice, indices.graphicsFamily.value(), 0,
-                     &graphicsQueue);
-    vkGetDeviceQueue(logicalDevice, indices.presentFamily.value(), 0,
-                     &presentQueue);
   }
 
   void mainLoop() {
-    // while (!glfwWindowShouldClose(window)) {
-    //   glfwPollEvents();
+    //   while (!glfwWindowShouldClose(window)) {
+    //     glfwPollEvents();
     // }
     // std::cout << "I am not supposed to print";
   }
@@ -346,7 +292,6 @@ private:
     if (enableValidationLayers) {
       extensions.push_back(VK_EXT_DEBUG_UTILS_EXTENSION_NAME);
     }
-
     return extensions;
   }
 
@@ -360,14 +305,12 @@ private:
 
     return VK_FALSE;
   }
-  VkSurfaceKHR surface;
+
   void cleanup() {
-    vkDestroyDevice(logicalDevice, nullptr);
     if (enableValidationLayers) {
       DestroyDebugUtilsMessengerEXT(instance, debugMessenger, nullptr);
     }
 
-    vkDestroySurfaceKHR(instance, surface, nullptr);
     vkDestroyInstance(instance, nullptr);
 
     glfwDestroyWindow(window);
