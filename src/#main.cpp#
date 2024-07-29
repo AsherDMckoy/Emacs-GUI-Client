@@ -237,25 +237,25 @@ private:
 
     VkPhysicalDeviceFeatures deviceFeatures{};
 
-    VkDeviceCreateInfo deviceCreateInfo{};
-    deviceCreateInfo.sType = VK_STRUCTURE_TYPE_DEVICE_CREATE_INFO;
-    deviceCreateInfo.queueCreateInfoCount =
+    VkDeviceCreateInfo createInfo{};
+    createInfo.sType = VK_STRUCTURE_TYPE_DEVICE_CREATE_INFO;
+    createInfo.queueCreateInfoCount =
         static_cast<uint32_t>(queueCreateInfos.size());
-    deviceCreateInfo.pQueueCreateInfos = queueCreateInfos.data();
+    createInfo.pQueueCreateInfos = queueCreateInfos.data();
 
-    deviceCreateInfo.pEnabledFeatures = &deviceFeatures;
-    deviceCreateInfo.enabledExtensionCount = 0;
+    createInfo.pEnabledFeatures = &deviceFeatures;
+    createInfo.enabledExtensionCount = 0;
 
     if (enableValidationLayers) {
-      deviceCreateInfo.enabledLayerCount =
+      createInfo.enabledLayerCount =
           static_cast<uint32_t>(validationLayers.size());
-      deviceCreateInfo.ppEnabledLayerNames = validationLayers.data();
+      createInfo.ppEnabledLayerNames = validationLayers.data();
     } else {
-      deviceCreateInfo.enabledLayerCount = 0;
+      createInfo.enabledLayerCount = 0;
     }
 
-    if (vkCreateDevice(physicalDevice, &deviceCreateInfo, nullptr,
-                       &logicalDevice) != VK_SUCCESS) {
+    if (vkCreateDevice(physicalDevice, &createInfo, nullptr, &logicalDevice) !=
+        VK_SUCCESS) {
       throw std::runtime_error("failed to create logical device");
     }
 
