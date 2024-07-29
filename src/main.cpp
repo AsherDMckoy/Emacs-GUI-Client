@@ -11,7 +11,10 @@
 #include <exception>
 #include <iostream>
 #include <optional>
+<<<<<<< HEAD
 #include <set>
+=======
+>>>>>>> refs/remotes/origin/main
 #include <stdexcept>
 #include <vector>
 
@@ -52,11 +55,16 @@ void DestroyDebugUtilsMessengerEXT(VkInstance instance,
 
 struct QueueFamilyIndices {
   std::optional<uint32_t> graphicsFamily;
+<<<<<<< HEAD
   std::optional<uint32_t> presentFamily;
 
   bool isComplete() {
     return graphicsFamily.has_value() && presentFamily.has_value();
   }
+=======
+
+  bool isComplete() { return graphicsFamily.has_value(); }
+>>>>>>> refs/remotes/origin/main
 };
 
 class HelloTriangle {
@@ -74,8 +82,11 @@ private:
   VkDebugUtilsMessengerEXT debugMessenger;
   VkPhysicalDevice physicalDevice = VK_NULL_HANDLE;
   VkDevice logicalDevice;
+<<<<<<< HEAD
   VkQueue graphicsQueue;
   VkQueue presentQueue;
+=======
+>>>>>>> refs/remotes/origin/main
   void initWindow() {
     if (!glfwInit()) {
       std::cerr << "Cannot initialize glfw" << std::endl;
@@ -95,7 +106,10 @@ private:
   void initVulkan() {
     createInstance();
     setupDebugMessenger();
+<<<<<<< HEAD
     createSurface();
+=======
+>>>>>>> refs/remotes/origin/main
     pickPhysicalDevice();
     createLogicalDevice();
   }
@@ -110,10 +124,13 @@ private:
     populateApplicationInfo(appInfo);
 
     auto extensions = getRequiredExtensions();
+<<<<<<< HEAD
     std::cout << "Extensions required:\n";
     for (const auto &extension : extensions) {
       std::cout << extension << std::endl;
     }
+=======
+>>>>>>> refs/remotes/origin/main
 
     VkInstanceCreateInfo createInfo{};
     populateVkInstanceCreateInfo(createInfo, appInfo, extensions);
@@ -144,12 +161,15 @@ private:
       throw std::runtime_error("failed to create instance!");
     }
   }
+<<<<<<< HEAD
   void createSurface() {
     if ((glfwCreateWindowSurface(instance, window, nullptr, &surface) !=
          VK_SUCCESS)) {
       throw std::runtime_error("failed to create window surface!");
     }
   }
+=======
+>>>>>>> refs/remotes/origin/main
 
   void pickPhysicalDevice() {
     uint32_t deviceCount = 0;
@@ -200,6 +220,7 @@ private:
 
     int i = 0;
     for (const auto &queueFamily : queueFamilies) {
+<<<<<<< HEAD
       VkBool32 presentSupport = false;
       vkGetPhysicalDeviceSurfaceSupportKHR(device, i, surface, &presentSupport);
 
@@ -207,6 +228,8 @@ private:
         indices.presentFamily = i;
       }
 
+=======
+>>>>>>> refs/remotes/origin/main
       if (queueFamily.queueFlags & VK_QUEUE_GRAPHICS_BIT) {
         indices.graphicsFamily = i;
       }
@@ -221,6 +244,7 @@ private:
   }
   void createLogicalDevice() {
     QueueFamilyIndices indices = findQueueFamilies(physicalDevice);
+<<<<<<< HEAD
     std::vector<VkDeviceQueueCreateInfo> queueCreateInfos;
     std::set<uint32_t> uniqueQueueFamilies = {indices.graphicsFamily.value(),
                                               indices.presentFamily.value()};
@@ -263,6 +287,16 @@ private:
                      &graphicsQueue);
     vkGetDeviceQueue(logicalDevice, indices.presentFamily.value(), 0,
                      &presentQueue);
+=======
+    VkDeviceQueueCreateInfo queueCreateInfo{};
+    queueCreateInfo.sType = VK_STRUCTURE_TYPE_DEVICE_QUEUE_CREATE_INFO;
+    queueCreateInfo.queueFamilyIndex = indices.graphicsFamily.value();
+    queueCreateInfo.queueCount = 1;
+
+    float queuePriority = 1.0f;
+    queueCreateInfo.pQueuePriorities = &queuePriority;
+    VkPhysicalDeviceFeatures deviceFeatures{};
+>>>>>>> refs/remotes/origin/main
   }
 
   void mainLoop() {
@@ -360,14 +394,22 @@ private:
 
     return VK_FALSE;
   }
+<<<<<<< HEAD
   VkSurfaceKHR surface;
   void cleanup() {
     vkDestroyDevice(logicalDevice, nullptr);
+=======
+
+  void cleanup() {
+>>>>>>> refs/remotes/origin/main
     if (enableValidationLayers) {
       DestroyDebugUtilsMessengerEXT(instance, debugMessenger, nullptr);
     }
 
+<<<<<<< HEAD
     vkDestroySurfaceKHR(instance, surface, nullptr);
+=======
+>>>>>>> refs/remotes/origin/main
     vkDestroyInstance(instance, nullptr);
 
     glfwDestroyWindow(window);
